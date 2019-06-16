@@ -49,6 +49,7 @@
 
             this.record.used.push('font-face');
             this.combinedCSS += (rule.cssText + this.lbrk);
+            return rule.cssText;
         },
         checkKeyframes: function (rule) { // 直接拷贝
             this.selectorCount++;
@@ -56,16 +57,23 @@
             var fname = rule.name;
             this.record.used.push(fname + ': keyframes');
             this.combinedCSS += (rule.cssText + this.lbrk);
+            return rule.cssText;
         },
         checkMedia: function (rule) {
-            // 递归处理
+            // 递归处理，同时去除空内容的media声明
             var prefix = '@media ' + rule.conditionText + ' {' + this.lbrk,
-                cssRules = rule.cssRules;
+                len = prefix.length,
+                cssRules = rule.cssRules,
+                result = '';
 
             this.combinedCSS += prefix;
+            result = this.processRuleList(cssRules);
 
-            this.processRuleList(cssRules);
-            this.combinedCSS += ('}' + this.lbrk);
+            if (!result) {
+                this.combinedCSS = this.combinedCSS.slice(0, -len);
+            } else {
+                this.combinedCSS += ('}' + this.lbrk);
+            }
         },
         checkSelector: function (rule) {
             //this.reset();
@@ -82,9 +90,14 @@
                 //if the selector does not contain an id or class selector then it must be
                 //a plain selector by tag (eg HTML or Body or Div). We want to include
                 //all of these selectors in our combined sheet
-                if ((selector.indexOf('#') === -1) && (selector.indexOf('.') === -1)) { // 标签选择器，全部留下
+                if ((selector.indexOf('#') === -1) && (selector.indexOf('.') === -1)) { // 标签选择器 or 属性选择器，全部留下
+
+                    if (/\[.+\]/.test(selector)) {
+                        this.record.used.push(selector + ": attribution selector");
+                    } else {
+                        this.record.used.push(selector + ": tag selector");
+                    }
                     found = true;
-                    this.record.used.push(selector + ": tag selector");
                 }
             }
 
@@ -138,36 +151,40 @@
             if (found === false) {
                 this.unUsedSelectors.push(selector); // 未使用的选择器
                 this.record.unused.push(selector);
+                return '';
             } else {
                 this.usedSelectors.push(selector);  // 使用到的选择器
                 this.combinedCSS = this.combinedCSS + rule.cssText + lbrk;
+                return rule.cssText;
                 // this.record.used.push(selector + ": unused selector by default");
             }
 
         },
         processEveryRule: function (rule) {
             if (rule instanceof CSSStyleRule) {
-                this.checkSelector(rule);
+                return this.checkSelector(rule);
             } else if (rule instanceof CSSMediaRule) { // 处理 @media
-                this.checkMedia(rule);
+                return this.checkMedia(rule);
             } else if (rule instanceof CSSImportRule) {
-                this.checkImport(rule);
+                return this.checkImport(rule);
             } else if (rule instanceof CSSFontFaceRule) {
-                this.checkFontFace(rule);
+                return this.checkFontFace(rule);
             } else if (rule instanceof CSSKeyframesRule) {
-                this.checkKeyframes(rule)
+                return this.checkKeyframes(rule)
             } else {
                 console.warn("this cssRule can't match", rule);
             }
         },
         processRuleList: function (cssRules) {
-            var numberRules = cssRules.length;
+            var numberRules = cssRules.length,
+                temp = '';
             for (var n = 0; n < numberRules; n++) { // 循环 cssRules
                 var rule = cssRules[n];
 
                 // 从这里，分种类处理： 包括 cssStyleRule，mediaRule，importRule，fontFaceRule
-                this.processEveryRule(rule);
+                temp += this.processEveryRule(rule);
             }
+            return temp;
         },
         //extract all css rules for the passed stylesheet
         extractRulesFromSheet: function (sheet) {
