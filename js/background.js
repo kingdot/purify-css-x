@@ -1,6 +1,7 @@
 ﻿(function (env) {
     // 保存搜集到的id和class信息
-    var details = {};
+    var details = {},
+        currentDetail = {};
 
 // 获取当前tabId
     var getCurrentTabId = function (callback) {
@@ -74,6 +75,10 @@
                     console.log(res, '回送给content-script【statistic】的去重后数据');
                     sendResponse(res);
                 }
+            } else if (request.to === 'pop&bg') { // 保存当前最终数据，供show页面使用
+                currentDetail = request;
+            } else if (request.from === 'show') { // 来自 show 页面的数据请求
+                sendResponse(currentDetail);
             }
 
         });

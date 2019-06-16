@@ -221,7 +221,7 @@
                     // 发送给popup统计信息
                     var popData = {
                         from: 'finally',
-                        to: 'pop',
+                        to: 'pop&bg',
                         iconUrl: data.iconUrl,
 
                         htmlData: data.htmlData,

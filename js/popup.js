@@ -30,7 +30,7 @@
 
     // 接收来自 statistic 的最终数据
     chrome.runtime.onMessage.addListener(function (request) {
-        if (request.to === 'pop') {
+        if (request.to === 'pop&bg') {
             pageDetails = request;
             update(pageDetails);
         }
@@ -49,7 +49,7 @@
         });
     };
     $('btn-detail').onclick = function () {
-        var link = chrome.extension.getURL("show.html");
+        var link = chrome.extension.getURL("html/show.html");
         chrome.tabs.create({url: link}, function (tab) {
             chrome.windows.update(tab.windowId, {focused: true}, null);
         });
