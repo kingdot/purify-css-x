@@ -19,7 +19,7 @@
         icon.setAttribute('src', items.iconUrl);
 
         $("all-selector").html(items.allSelector);
-        $("use-selector").html(items.usedSelectors.length);
+        $("use-selector").html(Object.keys(items.record.used).length);
 
         $("html-class").html(items.htmlData.classes.length);
         $("html-id").html(items.htmlData.IDs.length);

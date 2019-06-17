@@ -43,3 +43,11 @@ table {
 button:active, button:focus {
     outline: none;
 }
+
+.clear-fix::after{
+    content: '';
+    height: 0;
+    line-height: 0;
+    clear: both;
+    zoom: 1;
+}

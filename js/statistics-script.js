@@ -6,11 +6,9 @@
         host: '',
         allElements: null,
         rules: [],
-        unUsedSelectors: [],
-        usedSelectors: [],
         combinedCSS: '',
         lbrk: '\r\n',
-        record: {used: [], unused: []},
+        record: {used: {}, unused: {}},
         selectorCount: 0,
 
         findElements: function () {
@@ -47,7 +45,9 @@
         checkFontFace: function (rule) { // 直接拷贝
             this.selectorCount++;
 
-            this.record.used.push('font-face');
+            var name = rule.cssText.replace(/"/g, '').match(/font-family:\s*(\w+\s*\w+);/)[1];
+            this.record.used[name] = 'fonts';
+
             this.combinedCSS += (rule.cssText + this.lbrk);
             return rule.cssText;
         },
@@ -55,7 +55,8 @@
             this.selectorCount++;
 
             var fname = rule.name;
-            this.record.used.push(fname + ': keyframes');
+            this.record.used[fname] = 'keyframes';
+
             this.combinedCSS += (rule.cssText + this.lbrk);
             return rule.cssText;
         },
@@ -93,9 +94,9 @@
                 if ((selector.indexOf('#') === -1) && (selector.indexOf('.') === -1)) { // 标签选择器 or 属性选择器，全部留下
 
                     if (/\[.+\]/.test(selector)) {
-                        this.record.used.push(selector + ": attribution selector");
+                        this.record.used[selector] = "attributes";
                     } else {
-                        this.record.used.push(selector + ": tag selector");
+                        this.record.used[selector] = "tag";
                     }
                     found = true;
                 }
@@ -106,9 +107,9 @@
                 //compare to see if the selector contains the ID
                 for (i = 0; i < num; i++) {
                     if (selector.indexOf(this.IDs[i]) > -1) {
-                        this.rules.push(selector);  //this.rules 干啥用的？？？ => 存储id
+                        this.rules.push(selector);  //this.rules 干啥用的？？？ => 存储 id 和 class
                         found = true;
-                        this.record.used.push(selector + ": ID selector");
+                        this.record.used[selector] = "ID";
                         break;
                     }
                 }
@@ -140,7 +141,7 @@
                     if (yes === true) {
                         this.rules.push(selector);
                         found = true;
-                        this.record.used.push(selector + ": class selector");
+                        this.record.used[selector] = "class";
                         break;
                     }
                 }
@@ -149,11 +150,9 @@
 
             //not a used selector
             if (found === false) {
-                this.unUsedSelectors.push(selector); // 未使用的选择器
-                this.record.unused.push(selector);
+                this.record.unused[selector] = "unused";
                 return '';
             } else {
-                this.usedSelectors.push(selector);  // 使用到的选择器
                 this.combinedCSS = this.combinedCSS + rule.cssText + lbrk;
                 return rule.cssText;
                 // this.record.used.push(selector + ": unused selector by default");
@@ -245,13 +244,10 @@
                         jsData: data.jsData,
 
                         allSelector: self.selectorCount,
-                        usedSelectors: self.usedSelectors,
-                        unusedSelectors: self.unUsedSelectors,
-
                         record: self.record
                     };
                     chrome.runtime.sendMessage(popData);
-                    console.log(popData, 'this is statictis 正在发送给 pop！');
+                    console.log(popData, 'this is statictis 正在发送给 pop&bg！');
                 });
             } catch (err) {
                 console.error("error on load: " + err);

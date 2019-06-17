@@ -3,13 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <title>详情</title>
+    <link rel="stylesheet" type="text/css" href="../font/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+    <link href="../css/show.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+<div class="main">
+    <!--tab-->
+    <ul class="tab-switcher">
+        <li class="tab-item">样式使用率总览</li>
+        <li class="tab-item active">解析的所有样式</li>
+        <li class="tab-item">使用到的样式</li>
+    </ul>
+    <!--tab content-->
+    <div class="tab-content pie-wrapper">
+        <div id="pie" style="width: 400px;height: 250px"></div>
+    </div>
+    <div class="tab-content active">
+        <ul class="all-rules">
+            <li>body</li>
+            <li>.test1</li>
+            <li>#id</li>
+            <li>[type="text"]</li>
+            <li>body</li>
+            <li>.test1</li>
+            <li>#id</li>
+            <li>[type="text"]</li>
+            <li>body</li>
+            <li>.test1</li>
+            <li>#id</li>
+            <li>[type="text"]</li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <ul class="in-use-rules">
+            <li>body</li>
+            <li>.test1</li>
+            <li>#id</li>
+            <li>[type="text"]</li>
+            <li>body</li>
+            <li>.test1</li>
+            <li>#id</li>
+            <li>[type="text"]</li>
+            <li>body</li>
+            <li>.test1</li>
+            <li>#id</li>
+            <li>[type="text"]</li>
+        </ul>
+    </div>
+
+    <!--html part-->
+    <label class="title">HTML文件中使用的样式</label>
+    <div class="msg-wrapper">
+        <div class="summary-msg clear-fix active">
+            <label class="msg-type">CLASS数目：<span class="msg-count">200</span></label>
+            <label class="msg-type">ID数目：<span class="msg-count">100</span></label>
+            <i class="iconfont icon-downarrow"></i>
+        </div>
+        <ul class="detail-msg active">
+            <li><span class="selector-name">body</span><span class="selector-type">tag</span></li>
+            <li>.test1: class selector</li>
+            <li>#id: id selector</li>
+            <li>[type="text"]: attribution selector</li>
+        </ul>
+    </div>
+    <!--js part-->
+    <label class="title">JS文件中使用的样式</label>
+    <div class="msg-wrapper">
+        <div class="summary-msg">
+            <label class="msg-type">CLASS数目：<span class="msg-count">200</span></label>
+            <label class="msg-type">ID数目：<span class="msg-count">100</span></label>
+            <i class="iconfont icon-downarrow"></i>
+        </div>
+        <ul class="detail-msg active">
+            <li>body: tag selector</li>
+            <li>.test1: class selector</li>
+            <li>#id: id selector</li>
+            <li>[type="text"]: attribution selector</li>
+        </ul>
+    </div>
+</div>
 
 
-
-
-
+<script src="../js/echarts.min.js"></script>
 <script src="../js/show.js"></script>
 </body>
 </html>
