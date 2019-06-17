@@ -1,6 +1,6 @@
 .main {
     max-width: 750px;
-    margin: 0 auto;
+    margin: 30px auto 0;
     color: #ffffff;
     font-size: 16px;
 }
@@ -100,6 +100,12 @@ i.icon-downarrow {
 }
 
 ul.detail-msg{
+    height: 0;
+    overflow: hidden;
+}
+
+ul.detail-msg.active{
+    height: auto;
     padding: 15px 20px;
 }
 
@@ -125,15 +131,9 @@ ul.detail-msg{
     background: #00abff;
 }
 
-.all-rules{
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-}
-
-.all-rules li{
+.in-use-rules li, .un-use-rules li{
     display: inline-block;
     margin: 0 5px 5px 0;
-    padding: 2px 10px;
+    padding: 5px 10px;
     background: #76767b;
 }

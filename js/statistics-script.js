@@ -42,6 +42,15 @@
             var childSheet = rule.styleSheet;
             this.extractRulesFromSheet(childSheet);
         },
+        checkOther: function (rule) { // 任何无法解析的都原样复制
+            this.selectorCount++;
+
+            var name = rule.cssText.slice(0, 10) + '...';
+            this.record.used[name] = 'other';
+
+            this.combinedCSS += (rule.cssText + this.lbrk);
+            return rule.cssText;
+        },
         checkFontFace: function (rule) { // 直接拷贝
             this.selectorCount++;
 
@@ -172,6 +181,7 @@
                 return this.checkKeyframes(rule)
             } else {
                 console.warn("this cssRule can't match", rule);
+                this.checkOther(rule);
             }
         },
         processRuleList: function (cssRules) {
