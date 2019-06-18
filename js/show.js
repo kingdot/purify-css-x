@@ -27,12 +27,12 @@
     };
 
     var colorMap = {
-        "class": '#1416FF',
+        "class": '#49d6cf',
         "ID": '#3753FF',
         "tag": '#6792FB',
         "fonts": '#8FBD9C',
         "other": '#CB3B39',
-        "keyframs": '#A6C4FB',
+        "keyframes": '#A6C4FB',
         "attributes": '#F4CE91',
         "unused": '#76767B'
     };
