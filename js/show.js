@@ -6,9 +6,9 @@
         },
         series: [
             {
-                name: '访问来源',
+                name: '样式使用率',
                 type: 'pie',
-                radius: '55%',
+                radius: '70%',
                 center: ['50%', '60%'],
                 data: [
                     {value: 335, name: '直接访问'},
@@ -22,7 +22,8 @@
                     }
                 }
             }
-        ]
+        ],
+        color: ['#41bd1a', '#616166']
     };
 
     var colorMap = {
@@ -42,10 +43,9 @@
             process(response);
         });
 
+        // 饼图
         var id = document.getElementById('pie');
         var pie = echarts.init(id);
-
-        pie.setOption(option);
 
         // 选项卡的切换
         var tabs = document.querySelector('.tab-switcher'),
@@ -86,14 +86,23 @@
 
         // 处理数据
         function process(data) {
+            var used = data.record.used, unused = data.record.unused, usedLen = Object.keys(used).length,
+                unusedLen = Object.keys(unused).length;
+            // 处理 rate-pie
+            processPie(usedLen, unusedLen);
             // 处理 used
-            processUsed(data.record.used);
+            processUsed(used);
             // 处理 unused
-            processUnused(data.record.unused);
+            processUnused(unused);
             // 处理 html
             processHtml(data.htmlData);
             // 处理 js
             processJs(data.jsData);
+        }
+
+        function processPie(usedLen, unusedLen) {
+            option.series[0].data = [{name: '使用的样式', value: usedLen}, {name: '未使用的样式', value: unusedLen}];
+            pie.setOption(option);
         }
 
         function processUsed(used) {

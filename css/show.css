@@ -49,6 +49,12 @@
     background-color: rgba(0, 0, 0, 0.2);
 }
 
+#pie{
+    width: 400px;
+    height: 250px;
+    margin: 0 auto;
+}
+
 .tab-content.active {
     display: block;
 }
@@ -63,7 +69,7 @@ label.title {
 
 .msg-wrapper {
     margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, .2);
+    border: 1px solid rgba(255, 255, 255, .8);
     border-radius: 4px;
 }
 
