@@ -131,7 +131,7 @@
                     var cls = this.classes[i];
                     if (selector.length >= cls.length) {
                         var endNum = (selector.length - cls.length);
-                        var endOf = selector.substr(endNum);
+                        var endOf = selector.substr(endNum); // 从后往前找
                         if (endOf === cls) {
                             yes = true;
                         }
