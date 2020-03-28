@@ -54,14 +54,34 @@
 
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
+            // 先判断是不是url来了
+            if (request.from === "initial") {
+
+                let contentArr = [];
+                request.srcArr.forEach(src => {
+                    console.log('bg,get,src,：', src)
+                    getCssformUrl(src).then(content => {
+                        console.log('bg,get,cssContent,：', content);
+                        contentArr.push(content);
+
+                        if (contentArr.length === request.srcArr.length){
+                            console.log('ready send css content。。。')
+                            // sendResponse(111);   // 第二次send时通道已经关闭，因此会失败
+                            sendMessageToContentScript({contentArr});
+                        }
+                    })
+                });
+                return;
+            }
+
             // 存储来自数据源的数据
             if (request.to === "bg") {
                 var host = request.host, from = request.from;
-                console.log('收到来自: ' + host + ' 的原始数据', '来源：' + from);
+                console.log('收到来自: ' + host + ' 的原始数据', '来源：' + from); //(来自HTML，js的依赖数据)
 
-                processData(host, from, request); // 存储数据
+                processData(host, from, request); // 存储数据(来自HTML，js的依赖数据)
 
-                if (from === 'html') { // popUp 时，才返回数据
+                if (from === 'html') { // 来自HTML的数据，说明此时popUp了，需要返回总依赖给stastics做精简
                     // 返回本站点数据给content-script【statistic】
                     var jsData = details[host]['js'],
                         htmlData = details[host]['html'];
@@ -83,11 +103,25 @@
 
         });
 
+    function getCssformUrl(url) {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (e) {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    resolve(xhr.responseText);
+                }
+            };
+
+            xhr.open('GET', url, true);
+            xhr.send();
+        })
+    }
+
     env.bgDetails = {
-        details: details,
-        getCurrentTabId: getCurrentTabId,
-        sendMessageToContentScript: sendMessageToContentScript,
-        unique: unique
+        details,
+        getCurrentTabId,
+        sendMessageToContentScript,
+        unique
     };
 })(window);
 

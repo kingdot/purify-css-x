@@ -208,8 +208,15 @@
         getStyleSheets: function () {
             try {
                 var num = document.styleSheets.length;
+                console.log('sheetlength:', num)
                 for (var i = 0; i < num; i++) { // 循环 sheet
                     var sheet = document.styleSheets[i];
+                    if (sheet.href) { // 来自远程的css,全部跳过
+                        // var hrefHost = sheet.href.split('/')[2];
+                        // if (this.host !== hrefHost) continue; // 跨域不统计
+                        continue;
+                    }
+
                     var rules = sheet.rules || sheet.cssRules;
                     if (rules.length > 0) {   // 这里的cssRules 不能读取怎么办？？？????? 忽略？？ ==> 【只适用于开发阶段】
                         this.extractRulesFromSheet(sheet);
@@ -224,7 +231,7 @@
                 this.allElements = document.getElementsByTagName('*');
                 this.title = document.title;
                 this.host = location.host;
-                this.findElements();
+                this.findElements(); // 统计当前HTML的class和id
 
                 var msg = {
                     title: this.title,
@@ -239,15 +246,15 @@
                 console.log(msg, 'this is statictis 正在发送给 bg！');
 
                 var self = this;
-                chrome.runtime.sendMessage(msg, function (data) { // 接收bg的回传，得到去重后总数据
+                chrome.runtime.sendMessage(msg, function (data) { // 接收bg的回传，得到去重后【依赖总数据】
                     self.IDs = data.IDs;
                     self.classes = data.classes;
-                    self.getStyleSheets(); // 它使用的是谁？
+                    self.getStyleSheets(); // 它使用的是从document解析的总样式数据，开始精简
 
                     // 发送给popup统计信息
                     var popData = {
                         from: 'finally',
-                        to: 'pop&bg',
+                        to: 'pop&bg',  // popup展示所用数据，同时bg存储一份给show用
                         iconUrl: data.iconUrl,
 
                         htmlData: data.htmlData,
@@ -304,6 +311,6 @@
                 }
             }
         });
-    // 页面contentloaded之后，向background发送数据, 因为它只会在页面加载完之后执行一次，因此生成样式不能放在这里
+    // popup => 触发，重新搜集页面html依赖，向background发送数据后在回调函数里执行精简操作，得到最终数据。
     styleObj.load();
 })();

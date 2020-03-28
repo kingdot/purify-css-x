@@ -27,6 +27,15 @@
         "js/initial-script.js"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/css-generate.js"
+      ],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
