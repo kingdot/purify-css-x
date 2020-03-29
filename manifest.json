@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "demo",
+  "name": "css精简工具",
   "version": "1.0.0",
   "description": "一款基于动态分析的css精简工具，覆盖html和js",
   "icons": {

@@ -54,7 +54,11 @@
         checkFontFace: function (rule) { // 直接拷贝
             this.selectorCount++;
 
-            var name = rule.cssText.replace(/"/g, '').match(/font-family:\s*(\w+\s*\w+);/)[1];
+            var name = rule.cssText.replace(/"/g, '').match(/font-family:\s*([\w-\s]+);/)[1];
+            if (!name){
+                console.warn('fontface name invalid:', rule.cssText);
+                name = rule.cssText.slice(26, 36);
+            }
             this.record.used[name] = 'fonts';
 
             this.combinedCSS += (rule.cssText + this.lbrk);
@@ -189,7 +193,6 @@
                 temp = '';
             for (var n = 0; n < numberRules; n++) { // 循环 cssRules
                 var rule = cssRules[n];
-
                 // 从这里，分种类处理： 包括 cssStyleRule，mediaRule，importRule，fontFaceRule
                 temp += this.processEveryRule(rule);
             }
@@ -305,6 +308,7 @@
         function (request) {
             if (request.from === "pop" && request.msg === 'download') {
                 try {
+                    console.log('ready download...')
                     styleObj.downloadCSS();
                 } catch (err) {
                     console.error("Error1: " + err.message);
