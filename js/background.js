@@ -11,11 +11,9 @@
     };
 
 // 发送数据给content-script
-    var sendMessageToContentScript = function (message, callback) {
+    var sendMessageToContentScript = function (message) {
         getCurrentTabId(function (id) {
-            chrome.tabs.sendMessage(id, message, function (response) {
-                if (callback) callback(response);
-            });
+            chrome.tabs.sendMessage(id, message);
         })
     };
 
@@ -64,7 +62,7 @@
                         console.log('bg,get,cssContent,：', content);
                         contentArr.push(content);
 
-                        if (contentArr.length === request.srcArr.length){
+                        if (contentArr.length === request.srcArr.length) {
                             console.log('ready send css content。。。')
                             // sendResponse(111);   // 第二次send时通道已经关闭，因此会失败
                             sendMessageToContentScript({contentArr});
