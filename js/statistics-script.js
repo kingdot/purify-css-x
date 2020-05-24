@@ -113,6 +113,16 @@
                     }
                     found = true;
                 }
+                // 有些属性选择器为 class和id 的混合： .test1[data-1]  #test2[data-2]
+                if ((selector.indexOf('[') !== -1) && (selector.indexOf(']') !== -1)) {
+
+                    if (/\[.+\]/.test(selector)) {
+                        this.record.used[selector] = "attributes";
+                    } else {
+                        this.record.used[selector] = "tag";
+                    }
+                    found = true;
+                }
             }
 
             if (found === false) {
